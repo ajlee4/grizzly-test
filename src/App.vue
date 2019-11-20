@@ -1,28 +1,45 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <FormProduct></FormProduct>
+    <Table :productData="productData"></Table>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Table from "./components/Table";
+import FormProduct from "./components/FormProduct";
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
-</script>
+  name: "App",
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  components: {
+    Table,
+    FormProduct
+  },
+
+  data: () => ({
+    productData: []
+  }),
+  methods: {
+    async startComponent() {
+      try {
+        const response = await fetch(
+          "http://grizzly-dev.site/api/test/products"
+        );
+        const data = await response.json();
+        this.productData = data;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  },
+  mounted: function() {
+    this.startComponent();
+  },
+  watch: {
+    productData: function() {
+      this.startComponent();
+    }
+  }
+};
+</script>
